@@ -1,0 +1,27 @@
+# Node / frontend
+node_modules/
+dist/
+*.tsbuildinfo
+*.local
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment & secrets
+.env
+.env.*
+*.pem
+*.key
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# Local screenshots not part of source
+Screenshot*.png
