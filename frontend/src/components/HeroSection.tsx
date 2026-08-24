@@ -155,13 +155,9 @@ export default function HeroSection({ onGetStarted, onSignIn }: HeroSectionProps
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.35 }}
-        className="w-full px-6 pt-8 md:pt-12 pb-16 md:pb-24"
-        style={{ maxWidth: "80rem", marginLeft: "auto", marginRight: "auto" }}
+        className="w-full px-4 sm:px-6 pt-8 md:pt-12 pb-16 md:pb-24"
       >
-        <div
-          className="mx-auto w-full lg:w-[88%] rounded-2xl overflow-hidden bg-white dark:bg-black ring-1 ring-black/5 dark:ring-white/10 shadow-xl shadow-orange-500/10"
-          style={{ maxWidth: 1104 }}
-        >
+        <div className="mx-auto w-full max-w-[1400px]">
           <WorldMap dots={DEMO_DOTS} lineColor="#F97316" />
         </div>
       </motion.section>

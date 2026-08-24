@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DottedMap from "dotted-map";
-import { useThemeMode } from "@/ThemeProvider";
 
 interface MapProps {
   dots?: Array<{
@@ -25,21 +24,22 @@ export function WorldMap({
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
-  const { mode: theme } = useThemeMode();
 
   const map = useMemo(
     () => new DottedMap({ height: 100, grid: "diagonal" }),
     []
   );
 
+  // Landing-page visual: always light, transparent background so the dotted
+  // world blends into the page instead of forming a dark rectangle.
   const svgMap = useMemo(
-    () => map.getSVG({
-      radius: 0.22,
-      color: theme === "dark" ? "#FFFF7F40" : "#00000040",
-      shape: "circle",
-      backgroundColor: theme === "dark" ? "black" : "white",
-    }),
-    [map, theme]
+    () =>
+      map.getSVG({
+        radius: 0.22,
+        color: "#00000040",
+        shape: "circle",
+      }),
+    [map]
   );
 
   const projectPoint = (lat: number, lng: number) => {
@@ -148,7 +148,7 @@ export function WorldMap({
 
   return (
     <div
-      className="w-full aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[2/1] dark:bg-black bg-white rounded-lg relative font-sans overflow-hidden"
+      className="w-full aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[2/1] bg-transparent relative font-sans overflow-hidden"
       style={{ position: "relative", width: "100%", overflow: "hidden" }}
     >
       <img
