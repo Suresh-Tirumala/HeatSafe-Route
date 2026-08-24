@@ -1,0 +1,19 @@
+# Render Blueprint — HeatSafe Route frontend (static site)
+# Deploy via Render Dashboard → New + → Blueprint → pick this repo.
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: heatsafe-route
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+    routes:
+      # SPA safety net: unknown paths fall back to index.html
+      # (the app itself uses hash routing, e.g. /#/signin)
+      - type: rewrite
+        source: /*
+        destination: /index.html
