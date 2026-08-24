@@ -106,7 +106,7 @@ export function getInitialThemeMode(): ThemeMode {
   } catch {
     // storage unavailable
   }
-  return "dark";
+  return "light";
 }
 
 export function saveThemeMode(mode: ThemeMode): void {

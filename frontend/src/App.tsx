@@ -10,6 +10,7 @@ import { buildRoutesBetween } from "./utils/map";
 import { fetchWalkingRoutes } from "./utils/routing";
 import type { RouteCollection, RouteProfile } from "./types/route";
 import { useThemeMode } from "./ThemeProvider";
+import { themes } from "./theme";
 
 export default function App() {
   const [origin, setOrigin] = useState<PlaceResult | null>(null);
@@ -102,6 +103,16 @@ export default function App() {
     setDestination(origin);
   };
 
+  // Dark mode is scoped to the map workspace only — landing & sign-in stay light.
+  const isHomeDark = view === "home" && mode === "dark";
+
+  useEffect(() => {
+    document.body.style.background = isHomeDark
+      ? theme.pageBg
+      : themes.light.pageBg;
+    document.documentElement.style.colorScheme = isHomeDark ? "dark" : "light";
+  }, [isHomeDark, theme]);
+
   if (view === "landing") {
     return (
       <HeroSection
@@ -124,7 +135,10 @@ export default function App() {
   }
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative", overflow: "hidden" }}>
+    <div
+      className={isHomeDark ? "dark" : ""}
+      style={{ width: "100vw", height: "100vh", position: "relative", overflow: "hidden" }}
+    >
       <RoutePanel
         routeData={routeData}
         activeRoute={activeRoute}

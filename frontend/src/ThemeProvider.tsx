@@ -23,9 +23,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     saveThemeMode(mode);
-    document.body.style.background = themes[mode].pageBg;
-    document.documentElement.classList.toggle("dark", mode === "dark");
-    document.documentElement.style.colorScheme = mode;
   }, [mode]);
 
   const value = useMemo<ThemeContextValue>(
