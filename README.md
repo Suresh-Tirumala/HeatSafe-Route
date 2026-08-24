@@ -180,10 +180,6 @@ npm run build
 | Route comparison panel | ✅ Built |
 | 135 unit tests | ✅ All passing |
 | PostGIS database schema | ✅ Designed |
-| FastAPI server | 🚧 Planned |
-| Database integration | 🚧 Planned |
-| Ingestion pipelines | 🚧 Planned |
-| Real-time FortyGuard data | 🚧 Planned |
 
 ---
 
