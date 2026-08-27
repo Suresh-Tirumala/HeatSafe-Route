@@ -10,55 +10,65 @@ import {
   generateMockHeatData,
 } from "../utils/map";
 
-const CARTO_DARK_RASTER_STYLE: maplibregl.StyleSpecification = {
+// Free OpenStreetMap raster tiles — no API key required. CARTO's
+// basemaps.cartocdn.com now enforces an API key, so we use OSM directly.
+const OSM_RASTER_TILES = [
+  "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png",
+];
+
+const OSM_RASTER_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+const OSM_LIGHT_RASTER_STYLE: maplibregl.StyleSpecification = {
   version: 8,
   sources: {
-    "carto-dark": {
+    "osm-basemap": {
       type: "raster",
-      tiles: [
-        "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-        "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-        "https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-      ],
+      tiles: OSM_RASTER_TILES,
       tileSize: 256,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+      attribution: OSM_RASTER_ATTRIBUTION,
     },
   },
   layers: [
     {
-      id: "carto-dark-layer",
+      id: "osm-basemap-layer",
       type: "raster",
-      source: "carto-dark",
+      source: "osm-basemap",
     },
   ],
 };
 
-const CARTO_LIGHT_RASTER_STYLE: maplibregl.StyleSpecification = {
+// Same OSM tiles, darkened via MapLibre paint properties for dark mode.
+const OSM_DARK_RASTER_STYLE: maplibregl.StyleSpecification = {
   version: 8,
   sources: {
-    "carto-light": {
+    "osm-basemap": {
       type: "raster",
-      tiles: [
-        "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-        "https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-        "https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-      ],
+      tiles: OSM_RASTER_TILES,
       tileSize: 256,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+      attribution: OSM_RASTER_ATTRIBUTION,
     },
   },
   layers: [
     {
-      id: "carto-light-layer",
+      id: "osm-basemap-dark-layer",
       type: "raster",
-      source: "carto-light",
+      source: "osm-basemap",
+      paint: {
+        "raster-brightness-min": 0,
+        "raster-brightness-max": 0.25,
+        "raster-saturation": -0.6,
+        "raster-contrast": 0.2,
+      },
     },
   ],
 };
 
 const BASEMAP_STYLES: Record<ThemeMode, maplibregl.StyleSpecification> = {
-  dark: CARTO_DARK_RASTER_STYLE,
-  light: CARTO_LIGHT_RASTER_STYLE,
+  dark: OSM_DARK_RASTER_STYLE,
+  light: OSM_LIGHT_RASTER_STYLE,
 };
 
 // ─── Geolocation Control ──────────────────────────────────────────────
