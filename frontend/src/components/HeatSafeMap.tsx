@@ -185,6 +185,8 @@ interface HeatSafeMapProps {
   onMapClick?: (lng: number, lat: number) => void;
   /** Light / dark mode — swaps both UI palette and basemap tiles. */
   mode?: ThemeMode;
+  /** Mobile layout — reduces map fit/padding so routes fill the screen. */
+  mobile?: boolean;
 }
 
 export default function HeatSafeMap({
@@ -194,6 +196,7 @@ export default function HeatSafeMap({
   focusPoint = null,
   onMapClick,
   mode = "dark",
+  mobile = false,
 }: HeatSafeMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -205,6 +208,8 @@ export default function HeatSafeMap({
   heatCenterRef.current = heatCenter;
   const modeRef = useRef(mode);
   modeRef.current = mode;
+  const mobileRef = useRef(mobile);
+  mobileRef.current = mobile;
   const appliedStyleModeRef = useRef<ThemeMode | null>(null);
   const styleTokenRef = useRef(0);
   const updateRoutesRef = useRef<() => void>(() => {});
@@ -521,12 +526,15 @@ export default function HeatSafeMap({
     if (allCoords.length >= 2) {
       const lngs = allCoords.map((c) => c[0]);
       const lats = allCoords.map((c) => c[1]);
+      const isMobileLayout = mobileRef.current;
       map.fitBounds(
         [
           [Math.min(...lngs), Math.min(...lats)],
           [Math.max(...lngs), Math.max(...lats)],
         ],
-        { padding: { top: 80, bottom: 80, left: 420, right: 80 }, maxZoom: 16 }
+        isMobileLayout
+          ? { padding: { top: 140, bottom: 120, left: 40, right: 40 }, maxZoom: 16 }
+          : { padding: { top: 80, bottom: 80, left: 420, right: 80 }, maxZoom: 16 }
       );
     }
   }, [routeData, activeRoute]);

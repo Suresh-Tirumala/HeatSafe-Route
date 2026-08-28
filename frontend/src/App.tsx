@@ -22,6 +22,12 @@ export default function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const { theme, toggle, mode } = useThemeMode();
+
+  // Responsive: track whether we're on a mobile / narrow viewport.
+  const isMobile = useIsMobile(768);
+  // Whether the route panel is visible on mobile (always visible on desktop).
+  const [panelOpen, setPanelOpen] = useState(true);
+
   type View = "landing" | "signin" | "home";
   const viewFromHash = (): View => {
     if (typeof window === "undefined") return "landing";
@@ -139,23 +145,36 @@ export default function App() {
       className={isHomeDark ? "dark" : ""}
       style={{ width: "100vw", height: "100vh", position: "relative", overflow: "hidden" }}
     >
-      <RoutePanel
-        routeData={routeData}
-        activeRoute={activeRoute}
-        onRouteChange={setActiveRoute}
-        theme={theme}
-        userEmail={userEmail}
-        userName={userName}
-        mode={mode}
-        onToggleTheme={toggle}
-        onSignOut={() => {
-          setUserEmail(null);
-          setUserName(null);
-          goTo("#signin");
+      {(!isMobile || panelOpen) && (
+        <RoutePanel
+          routeData={routeData}
+          activeRoute={activeRoute}
+          onRouteChange={setActiveRoute}
+          theme={theme}
+          userEmail={userEmail}
+          userName={userName}
+          mode={mode}
+          onToggleTheme={toggle}
+          onSignOut={() => {
+            setUserEmail(null);
+            setUserName(null);
+            goTo("#signin");
+          }}
+          onLogoClick={() => goTo("")}
+          mobile={isMobile}
+          onCollapse={() => setPanelOpen(false)}
+        />
+      )}
+
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: isMobile ? 0 : 380,
+          right: 0,
+          bottom: 0,
         }}
-        onLogoClick={() => goTo("")}
-      />
-      <div style={{ position: "absolute", top: 0, left: 380, right: 0, bottom: 0 }}>
+      >
         <HeatSafeMap
           routeData={routeData}
           activeRoute={activeRoute}
@@ -163,6 +182,7 @@ export default function App() {
           focusPoint={singlePoint}
           onMapClick={handleMapClick}
           mode={mode}
+          mobile={isMobile}
         />
 
         {/* ── Search & select location bar (Google Maps style) ────── */}
@@ -172,16 +192,17 @@ export default function App() {
             position: "absolute",
             top: 16,
             left: 16,
-            width: 400,
-            maxWidth: "calc(100% - 140px)",
+            right: isMobile ? 16 : undefined,
+            width: isMobile ? undefined : 400,
+            maxWidth: isMobile ? "calc(100% - 32px)" : "calc(100% - 140px)",
             zIndex: 20,
             display: "flex",
-            alignItems: "center",
+            alignItems: isMobile ? "center" : "flex-start",
             gap: 8,
             fontFamily: "'Inter', system-ui, sans-serif",
           }}
         >
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
             <LocationSearch
               theme={theme}
               dotColor="#22C55E"
@@ -246,6 +267,61 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {/* Floating button to re-open the route panel on mobile */}
+      {isMobile && !panelOpen && (
+        <button
+          type="button"
+          data-testid="open-panel-fab"
+          aria-label="Show routes"
+          onClick={() => setPanelOpen(true)}
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 16,
+            zIndex: 25,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "12px 18px",
+            borderRadius: 999,
+            border: "none",
+            background: "linear-gradient(135deg, #F97316, #EF4444)",
+            color: "#FFFFFF",
+            fontWeight: 700,
+            fontSize: 14,
+            fontFamily: "'Inter', system-ui, sans-serif",
+            cursor: "pointer",
+            boxShadow: "0 6px 18px rgba(249,115,22,0.45)",
+          }}
+        >
+          ◉ Routes
+        </button>
+      )}
     </div>
   );
+}
+
+// Hook to detect narrow / mobile viewports via CSS media queries.
+function useIsMobile(breakpoint = 768): boolean {
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < breakpoint;
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+    const update = (e: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobile(e.matches);
+    };
+    update(mq);
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", update);
+      return () => mq.removeEventListener("change", update);
+    }
+    (mq as any).addListener(update);
+    return () => (mq as any).removeListener(update);
+  }, [breakpoint]);
+
+  return isMobile;
 }

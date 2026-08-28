@@ -29,6 +29,10 @@ interface RoutePanelProps {
   onSignOut?: () => void;
   /** Navigate back to the landing (hero) page when the logo is clicked. */
   onLogoClick?: () => void;
+  /** Mobile layout — renders as a bottom sheet instead of a left sidebar. */
+  mobile?: boolean;
+  /** Collapse the mobile bottom sheet. */
+  onCollapse?: () => void;
 }
 
 export default function RoutePanel({
@@ -42,6 +46,8 @@ export default function RoutePanel({
   onToggleTheme,
   onSignOut,
   onLogoClick,
+  mobile = false,
+  onCollapse,
 }: RoutePanelProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -128,6 +134,29 @@ export default function RoutePanel({
           </span>
         </span>
       </button>
+      {mobile && (
+        <button
+          type="button"
+          data-testid="collapse-panel-btn"
+          aria-label="Hide routes panel"
+          title="Hide routes panel"
+          onClick={onCollapse}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            border: `1px solid ${theme.iconBtnBorder}`,
+            background: theme.iconBtnBg,
+            color: theme.text,
+            cursor: "pointer",
+            fontSize: 15,
+            lineHeight: 1,
+            flexShrink: 0,
+          }}
+        >
+          ▾
+        </button>
+      )}
       <button
         type="button"
         data-testid="settings-btn"
@@ -366,7 +395,7 @@ export default function RoutePanel({
 
   if (!routeData) {
     return (
-      <div data-testid="route-panel" style={panelStyle(theme)}>
+      <div data-testid="route-panel" style={panelStyle(theme, mobile)}>
         {settingsHeader}
         <div style={emptyStyle}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>🗺️</div>
@@ -384,7 +413,7 @@ export default function RoutePanel({
   const profiles: RouteProfile[] = ["shortest", "coolest", "balanced"];
 
   return (
-    <div data-testid="route-panel" style={panelStyle(theme)}>
+    <div data-testid="route-panel" style={panelStyle(theme, mobile)}>
       {/* ── Header ────────────────────────────────────────────── */}
       {settingsHeader}
 
@@ -631,22 +660,41 @@ function DeltaPct({
 
 // ── Styles ─────────────────────────────────────────────────────────
 
-const panelStyle = (theme: Theme): React.CSSProperties => ({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  bottom: 0,
-  width: 380,
-  background: theme.panelBg,
-  backdropFilter: "blur(20px)",
-  borderRight: `1px solid ${theme.panelBorder}`,
-  overflowY: "auto",
-  zIndex: 10,
-  display: "flex",
-  flexDirection: "column",
-  fontFamily: "'Inter', system-ui, sans-serif",
-  color: theme.text,
-});
+const panelStyle = (theme: Theme, mobile: boolean): React.CSSProperties => {
+  const base: React.CSSProperties = {
+    background: theme.panelBg,
+    backdropFilter: "blur(20px)",
+    overflowY: "auto",
+    zIndex: 10,
+    display: "flex",
+    flexDirection: "column",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    color: theme.text,
+  };
+  if (mobile) {
+    return {
+      ...base,
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      maxHeight: "60vh",
+      width: "100%",
+      borderTop: `1px solid ${theme.panelBorder}`,
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+    };
+  }
+  return {
+    ...base,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: 380,
+    borderRight: `1px solid ${theme.panelBorder}`,
+  };
+};
 
 const headerStyle = (theme: Theme): React.CSSProperties => ({
   padding: "20px 16px 16px",

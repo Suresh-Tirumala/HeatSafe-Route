@@ -17,6 +17,7 @@ export default function RouteToggle({ activeRoute, onChange, theme = themes.dark
       data-testid="route-toggle"
       style={{
         display: "flex",
+        flexWrap: "wrap",
         gap: 0,
         borderRadius: 8,
         overflow: "hidden",
@@ -68,7 +69,7 @@ export default function RouteToggle({ activeRoute, onChange, theme = themes.dark
 }
 
 const btnStyle: React.CSSProperties = {
-  padding: "8px 14px",
+  padding: "8px 12px",
   fontSize: 13,
   fontFamily: "inherit",
   cursor: "pointer",
@@ -76,4 +77,5 @@ const btnStyle: React.CSSProperties = {
   border: "none",
   outline: "none",
   whiteSpace: "nowrap",
+  flex: "1 1 auto",
 };
