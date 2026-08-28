@@ -145,10 +145,10 @@ const SignInCard = ({ onSignIn }: TravelConnectSignInProps) => {
       >
         {/* ── Left: brand visual ─────────────────────────────── */}
         <div
-          className="hidden md:block md:w-1/2 shrink-0 relative overflow-hidden border-r border-gray-100"
-          style={{ minHeight: 620 }}
+          className="w-full md:w-1/2 shrink-0 relative overflow-hidden md:border-r border-gray-100"
+          style={{ minHeight: 300, maxHeight: "42vh" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-100 flex flex-col items-center px-8 pt-10 pb-9">
+          <div className="absolute inset-0 md:border-r-0 bg-gradient-to-br from-orange-50 to-amber-100 flex flex-col items-center px-6 pt-6 pb-2 md:px-8 md:pt-10 md:pb-9">
             <div className="flex-1 w-full min-h-0 flex items-center justify-center">
               <Globe
                 markers={GLOBE_MARKERS}
@@ -162,11 +162,11 @@ const SignInCard = ({ onSignIn }: TravelConnectSignInProps) => {
                 markerSize={0.03}
                 markerElevation={0.01}
                 speed={0.0035}
-                className="w-full max-w-[340px] xl:max-w-[380px]"
+                className="w-full max-w-[200px] md:max-w-[340px] xl:max-w-[380px]"
               />
             </div>
 
-            <div className="shrink-0 pointer-events-none text-center">
+            <div className="hidden md:block shrink-0 pointer-events-none text-center">
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
