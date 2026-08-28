@@ -145,10 +145,9 @@ const SignInCard = ({ onSignIn }: TravelConnectSignInProps) => {
       >
         {/* ── Left: brand visual ─────────────────────────────── */}
         <div
-          className="w-full md:w-1/2 shrink-0 relative overflow-hidden md:border-r border-gray-100"
-          style={{ minHeight: 300, maxHeight: "42vh" }}
+          className="w-full md:w-1/2 shrink-0 relative overflow-hidden md:border-r-0 border-gray-100 min-h-[280px] max-h-[42vh] md:min-h-[620px] md:max-h-none"
         >
-          <div className="absolute inset-0 md:border-r-0 bg-gradient-to-br from-orange-50 to-amber-100 flex flex-col items-center px-6 pt-6 pb-2 md:px-8 md:pt-10 md:pb-9">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-100 flex flex-col items-center px-8 pt-10 pb-9">
             <div className="flex-1 w-full min-h-0 flex items-center justify-center">
               <Globe
                 markers={GLOBE_MARKERS}
